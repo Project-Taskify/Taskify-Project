@@ -61,6 +61,11 @@ const Header = () => {
     navigate(`/dashboard/${dashboardid}/edit`);
   };
 
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/');
+  };
+
   useEffect(() => {
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -81,13 +86,25 @@ const Header = () => {
       {curPage === 'mydashboard' || curPage === 'mypage' ? (
         <>
           <MenuDiv>{curPage === 'mydashboard' ? '나의 대시보드' : '계정관리'}</MenuDiv>
-          <Link to={'/mypage'}>
-            <UserName
-              nickname={userInfo?.state?.user?.nickname}
-              img={userInfo?.state?.user?.profileImageUrl}
-              nameHidden={true}
-            />
-          </Link>
+          <div
+            style={{
+              gap: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Link to={'/mypage'}>
+              <UserName
+                nickname={userInfo?.state?.user?.nickname}
+                img={userInfo?.state?.user?.profileImageUrl}
+                nameHidden={true}
+              />
+            </Link>
+            <BtnStyle onClick={handleLogout} styleType={BUTTON_TYPE.SECONDARY} size="S">
+              로그아웃
+            </BtnStyle>
+          </div>
         </>
       ) : (
         <>
@@ -223,4 +240,5 @@ const BtnStyle = styled(Button)`
     font-size: 0.875rem;
   }
 `;
+
 export default Header;
