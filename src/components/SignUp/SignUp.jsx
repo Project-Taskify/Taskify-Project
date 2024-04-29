@@ -7,6 +7,7 @@ import ModalCheckIt from '../Modal/ModalCheckIt/ModalCheckIt';
 import useBooleanState from '../../hooks/useBooleanState';
 import instance from '../../lib/axios';
 import { Link, useNavigate } from 'react-router-dom';
+import big_logo from '@images/largeLogo.svg';
 
 const PASSWORD_MIN_LENGTH = 8;
 const NICKNAME_MAX_LENGTH = 10;
@@ -83,7 +84,8 @@ function SignUp() {
       <S.Container>
         <S.Logo>
           <Link to="/">
-            <img src="src/assets/images/largeLogo.svg" alt="랜딩 페이지로 이동하려면 클릭" />
+            <img src={big_logo} />
+            {/* <img src="src/assets/images/largeLogo.svg" alt="랜딩 페이지로 이동하려면 클릭" /> */}
           </Link>
         </S.Logo>
         <S.Text>첫 방문을 환영합니다!</S.Text>
