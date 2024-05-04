@@ -84,7 +84,7 @@ const ColumnList = ({ id, title, columnRequest }) => {
         }}
         closeModal={closeModal}
       />
-      <ToDoModal isOpen={isCardModal} colseModal={closeCardModal} {...modalInfo} />
+      <ToDoModal isOpen={isCardModal} columnId={id} colseModal={closeCardModal} {...modalInfo} />
       <AddCardModal
         isOpen={isCardAddModal}
         columnId={id}
