@@ -6,8 +6,12 @@ import ToDoModalOption from './ToDoModalOption';
 import ToDoModalTag from './ToDoModalTag';
 import ToDoModalUser from './ToDoModalUser';
 import BaseModal from '../../../common/Modal';
+import EditCardModal from '../../EditCardModal/EditCardModal';
+import useBooleanState from '../../../../hooks/useBooleanState';
 
 const ToDoModal = ({
+  columnId,
+  id,
   isOpen,
   colseModal,
   columnName,
@@ -19,9 +23,21 @@ const ToDoModal = ({
   tags,
   // img,
 }) => {
+  const cardInfo = {
+    cardId: id,
+    title,
+    assignee,
+    description,
+    dueDate,
+    tags,
+    imageUrl,
+  };
+
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [renderedOption, setRenderedOption] = useState(null);
+
+  const [isOpenEditModal, showEditModal, closeEditModal] = useBooleanState(false);
   // const [error, setError] = useState(null); // 여기에 error 상태 추가
 
   const handleCommentChange = (e) => {
@@ -52,7 +68,7 @@ const ToDoModal = ({
     if (renderedOption) {
       setRenderedOption(null);
     } else {
-      setRenderedOption(<ToDoModalOption />);
+      setRenderedOption(<ToDoModalOption onClickEdit={showEditModal} />);
     }
   };
 
@@ -79,64 +95,77 @@ const ToDoModal = ({
     <>
       {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
 
-      <BaseModal isOpen={isOpen}>
-        <S.ModalContainer>
-          <S.ModalHeader>
-            <h1>{title}</h1>
-            <div className="button_area">
-              <button className="modal_button" onClick={onClickModalOption}>
-                <img src="/src/assets/icon/3dot.svg" />
-              </button>
-              <button className="modal_button" onClick={onClickModalClose}>
-                <img src="/src/assets/icon/closeX.svg" />
-              </button>
-              {renderedOption}
-            </div>
-          </S.ModalHeader>
-          <ToDoModalUser user={assignee} deadline={dueDate} />
-          <S.ModalContent>
-            <S.ModalTag>
-              <div>
-                <h1></h1>
-                <h2>{columnName}</h2>
-              </div>
-              <p>|</p>
-              <ToDoModalTag tags={tags} />
-            </S.ModalTag>
-            <S.ModalWords>{description}</S.ModalWords>
-            {imageUrl && (
-              <S.ModalContentImage>
-                <img src={imageUrl} alt="img" />
-              </S.ModalContentImage>
-            )}
+      {isOpenEditModal ? (
+        <EditCardModal
+          isOpen={isOpenEditModal}
+          columnId={columnId}
+          cardInfo={cardInfo}
+          onClose={() => {
+            closeEditModal();
+            colseModal();
+          }}
+        />
+      ) : (
+        <BaseModal isOpen={isOpen}>
+          <S.ModalContainer>
+            <S.ModalHeader>
+              <h1>{title}</h1>
+              <div className="button_area">
+                <button className="modal_button" onClick={onClickModalOption}>
+                  <img src="/src/assets/icon/3dot.svg" />
+                </button>
+                <button className="modal_button" onClick={onClickModalClose}>
+                  <img src="/src/assets/icon/closeX.svg" />
+                </button>
 
-            <S.ModalCommentInput>
-              <h3>댓글</h3>
-              <div>
-                <textarea
-                  placeholder="댓글 작성하기"
-                  value={comment}
-                  onChange={handleCommentChange}
-                />
-                <Button>입력</Button>
-                {/* <Button onClick={handleCommentSubmit}>입력</Button> */}
+                {renderedOption}
               </div>
-              <ul>
-                {comments.map((commentItem, index) => (
-                  <ToDoModalComment
-                    key={index}
-                    id={index}
-                    user={assignee}
-                    comment={commentItem}
-                    onEditComment={handleEditComment}
-                    onDeleteComment={() => handleDeleteComment(index)}
+            </S.ModalHeader>
+            <ToDoModalUser user={assignee} deadline={dueDate} />
+            <S.ModalContent>
+              <S.ModalTag>
+                <div>
+                  <h1></h1>
+                  <h2>{columnName}</h2>
+                </div>
+                <p>|</p>
+                <ToDoModalTag tags={tags} />
+              </S.ModalTag>
+              <S.ModalWords>{description}</S.ModalWords>
+              {imageUrl && (
+                <S.ModalContentImage>
+                  <img src={imageUrl} alt="img" />
+                </S.ModalContentImage>
+              )}
+
+              <S.ModalCommentInput>
+                <h3>댓글</h3>
+                <div>
+                  <textarea
+                    placeholder="댓글 작성하기"
+                    value={comment}
+                    onChange={handleCommentChange}
                   />
-                ))}
-              </ul>
-            </S.ModalCommentInput>
-          </S.ModalContent>
-        </S.ModalContainer>
-      </BaseModal>
+                  <Button>입력</Button>
+                  {/* <Button onClick={handleCommentSubmit}>입력</Button> */}
+                </div>
+                <ul>
+                  {comments.map((commentItem, index) => (
+                    <ToDoModalComment
+                      key={index}
+                      id={index}
+                      user={assignee}
+                      comment={commentItem}
+                      onEditComment={handleEditComment}
+                      onDeleteComment={() => handleDeleteComment(index)}
+                    />
+                  ))}
+                </ul>
+              </S.ModalCommentInput>
+            </S.ModalContent>
+          </S.ModalContainer>
+        </BaseModal>
+      )}
     </>
   );
 };

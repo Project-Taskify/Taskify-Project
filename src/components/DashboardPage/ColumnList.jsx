@@ -6,15 +6,18 @@ import { queryClient } from '../../App';
 import ColumnModal from '../Modal/Dashboard/ColumnModal';
 import useBooleanState from '../../hooks/useBooleanState';
 import ToDoModal from '../Modal/ToDoModal/ShowToDo/ToDoModal';
+import AddCardModal from '../Modal/AddCardModal/AddCardModal';
 import { useParams } from 'react-router-dom';
 import setting_icon from '@icon/setting_icon.svg';
 import add_icon from '@icon/dashboard_add_icon.svg';
 import calendar_icon from '@icon/calendar_icon.png';
 
 const ColumnList = ({ id, title, columnRequest }) => {
-  const [cardList, setCardList] = useState([]);
   const [isModalOpen, openModal, closeModal] = useBooleanState();
   const [isCardModal, openCardModal, closeCardModal] = useBooleanState();
+  const [isCardAddModal, openCardAddModal, closeCardAddModal] = useBooleanState();
+
+  const [cardList, setCardList] = useState([]);
   const [modalInfo, setModalInfo] = useState({});
   const { dashboardid } = useParams();
 
@@ -81,24 +84,26 @@ const ColumnList = ({ id, title, columnRequest }) => {
         }}
         closeModal={closeModal}
       />
-      <ToDoModal isOpen={isCardModal} colseModal={closeCardModal} {...modalInfo} />
+      <ToDoModal isOpen={isCardModal} columnId={id} colseModal={closeCardModal} {...modalInfo} />
+      <AddCardModal
+        isOpen={isCardAddModal}
+        columnId={id}
+        dashboardId={dashboardid}
+        onClose={closeCardAddModal}
+      />
+
       <ColumnTitle color="#333333">
         <div className="title_area">
           <img className="dot" />
           <h1 className="title">{title}</h1>
           <p className="count">{cardList?.length ?? 0}</p>
         </div>
-        <button
-          className="setting_button"
-          onClick={() => {
-            openModal();
-          }}
-        >
+        <button className="setting_button" onClick={openModal}>
           <img src={setting_icon} />
         </button>
       </ColumnTitle>
       <CardList>
-        <button className="card_default new_card">
+        <button className="card_default new_card" type="button" onClick={openCardAddModal}>
           <img src={add_icon} />
         </button>
         {cardList?.map((e) => {
